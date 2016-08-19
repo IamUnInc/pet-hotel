@@ -22,4 +22,27 @@ router.get('/', function (req, res) {
   });
 });
 
+router.post('/', function (req, res) {
+  var owner = req.body;
+
+  pg.connect(connectionString, function (err, client, done) {
+    if (err) {
+      res.sendStatus(500);
+    }
+
+    client.query('INSERT INTO owners (first_name, last_name)'
+                + 'VALUES ($1, $2)',
+                [owner.first_name, owner.last_name],
+                function (err, result) {
+                  done();
+
+                  if (err) {
+                    res.sendStatus(500);
+                  }
+
+                  res.sendStatus(201);
+                });
+  });
+});
+
 module.exports = router;
